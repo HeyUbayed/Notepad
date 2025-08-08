@@ -8,18 +8,30 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class Notepad extends JFrame implements ActionListener{
 
+    String text = "";
+    int font=24;
+    
     private JTextArea area;
     private JScrollPane scpane;
-    String text = "";
+    JMenuBar menuBar;
+    JMenu file, edit, mode;
+    JMenuItem newdoc, open, save, print, exit;
+    JMenuItem copy, paste, cut, selectall;
+    JMenuItem light, dark;
+    JButton zoomIn,zoomOut;
     
     public Notepad() {
         setTitle("Notepad");
+        ImageIcon notepadIcon = new ImageIcon(ClassLoader.getSystemResource("icon/notepad.png"));
+        Image icon = notepadIcon.getImage();
+        setIconImage(icon);
+        
         setSize(1950, 1050);
         setLayout(new BorderLayout());
 
@@ -27,27 +39,30 @@ public class Notepad extends JFrame implements ActionListener{
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
         
-        JMenuBar menuBar = new JMenuBar(); 
-        menuBar.setBackground(Color.LIGHT_GRAY);
+        menuBar = new JMenuBar(); 
+        menuBar.setBackground(new Color(255,247,247));
         
-        JMenu file = new JMenu("File"); 
-        JMenu edit = new JMenu("Edit");
+        file = new JMenu("File"); 
+        edit = new JMenu("Edit");
+        mode = new JMenu("Mode");
         
-        area.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
-        file.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
-        edit.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
+        newdoc = new JMenuItem("New");
+        open = new JMenuItem("Open");
+        save = new JMenuItem("Save");
+        print = new JMenuItem("Print");
+        exit = new JMenuItem("Exit");
         
-        JMenuItem newdoc = new JMenuItem("New");
-        JMenuItem open = new JMenuItem("Open");
-        JMenuItem save = new JMenuItem("Save");
-        JMenuItem print = new JMenuItem("Print");
-        JMenuItem exit = new JMenuItem("Exit");
+        copy = new JMenuItem("Copy");
+        paste = new JMenuItem("Paste");
+        cut = new JMenuItem("Cut");
+        selectall = new JMenuItem("Select All");
         
-        JMenuItem copy = new JMenuItem("Copy");
-        JMenuItem paste = new JMenuItem("Paste");
-        JMenuItem cut = new JMenuItem("Cut");
-        JMenuItem selectall = new JMenuItem("Select All");
+        light = new JMenuItem("Light");
+        dark = new JMenuItem("Dark");
         
+        zoomIn = new JButton("+");
+        zoomOut = new JButton("-");
+
         newdoc.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
@@ -57,7 +72,10 @@ public class Notepad extends JFrame implements ActionListener{
         copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
         paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
         cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
-        selectall.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));               
+        selectall.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));       
+        
+        light.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+        dark.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
         
         newdoc.addActionListener(this);
         open.addActionListener(this);
@@ -68,10 +86,21 @@ public class Notepad extends JFrame implements ActionListener{
         paste.addActionListener(this);
         cut.addActionListener(this);
         selectall.addActionListener(this);
+        light.addActionListener(this);
+        dark.addActionListener(this);
+        
+        area.setFont(new Font("SAN_SERIF", Font.PLAIN, font));
+        file.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
+        edit.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
+        mode.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
+        zoomIn.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
+        zoomOut.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
         
         setJMenuBar(menuBar);
+        
         menuBar.add(file);
         menuBar.add(edit);
+        menuBar.add(mode);
         
         file.add(newdoc);
         file.add(open);
@@ -84,27 +113,39 @@ public class Notepad extends JFrame implements ActionListener{
         edit.add(cut);
         edit.add(selectall);
         
-        JButton zoomIn = new JButton("+");
-        zoomIn.setBackground(Color.LIGHT_GRAY);
-        zoomIn.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
+        mode.add(light);
+        mode.add(dark);
+        
+        menuBar.add(zoomIn);
+        menuBar.add(zoomOut);
+
+        zoomIn.setBackground(new Color(255,247,247));
         zoomIn.setBorderPainted(false);
         zoomIn.setFocusPainted(false);
-        menuBar.add(zoomIn);
+        zoomIn.addActionListener(this);
         
-        JButton zoomOut = new JButton("-");
-        zoomOut.setBackground(Color.LIGHT_GRAY);
-        zoomOut.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
+        zoomOut.setBackground(new Color(255,247,247));
         zoomOut.setBorderPainted(false);
         zoomOut.setFocusPainted(false);
-        menuBar.add(zoomOut);
-        
+        zoomOut.addActionListener(this);
+           
         scpane = new JScrollPane(area); 
+        menuBar.setBorder(BorderFactory.createEmptyBorder());
+        scpane.setBorder(BorderFactory.createLineBorder(Color.white, 7));
+        scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = Color.LIGHT_GRAY; 
+            }
+        });
         add(scpane, BorderLayout.CENTER);
-        scpane.setBorder(BorderFactory.createLineBorder(Color.white, 8));
+        
         setVisible(true);
     }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
+    	
     	if (ae.getActionCommand().equals("New")) {
             area.setText("");
         
@@ -124,7 +165,7 @@ public class Notepad extends JFrame implements ActionListener{
                     area.read( br, null );
                     br.close();
                     area.requestFocus();
-                }catch(Exception e){
+                } catch(Exception e){
                     System.out.print(e);
                 }
             }
@@ -145,26 +186,87 @@ public class Notepad extends JFrame implements ActionListener{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else if(ae.getActionCommand().equals("Print")){
+        } else if(ae.getActionCommand().equals("Print")){
             try{
                 area.print();
             }catch(Exception e){}
-        }else if (ae.getActionCommand().equals("Exit")) {
+        } else if (ae.getActionCommand().equals("Exit")) {
             System.exit(0);
-        }else if (ae.getActionCommand().equals("Copy")) {
+        } else if (ae.getActionCommand().equals("Copy")) {
             text = area.getSelectedText();
-        }else if (ae.getActionCommand().equals("Paste")) {
+        } else if (ae.getActionCommand().equals("Paste")) {
             area.insert(text, area.getCaretPosition());
-        }else if (ae.getActionCommand().equals("Cut")) {
+        } else if (ae.getActionCommand().equals("Cut")) {
             text = area.getSelectedText();
             area.replaceRange("", area.getSelectionStart(), area.getSelectionEnd());
-        }else if (ae.getActionCommand().equals("Select All")) {
+        } else if (ae.getActionCommand().equals("Select All")) {
             area.selectAll();
+        } else if (ae.getActionCommand().equals("Light")) {
+
+            area.setBackground(Color.WHITE);
+            area.setForeground(Color.BLACK);
+            area.setCaretColor(Color.BLACK);
+            
+            zoomOut.setForeground(Color.black);
+            zoomIn.setForeground(Color.black);
+            zoomOut.setBackground(new Color(255,247,247));
+            zoomIn.setBackground(new Color(255,247,247));
+            
+            file.setForeground(Color.BLACK);
+            edit.setForeground(Color.BLACK);
+            mode.setForeground(Color.BLACK);
+            
+            menuBar.setBackground(new Color(255,247,247));
+           
+            scpane.getVerticalScrollBar().setBackground(Color.gray);
+            scpane.setBorder(BorderFactory.createLineBorder(Color.white, 7));
+            scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+                @Override
+                protected void configureScrollBarColors() {
+                    this.thumbColor = Color.LIGHT_GRAY; 
+                }
+            });
+        } else if (ae.getActionCommand().equals("Dark")) {
+
+            area.setBackground(new Color(30,30,30));
+            area.setForeground(Color.WHITE);
+            area.setCaretColor(Color.WHITE);
+
+            file.setForeground(Color.WHITE);
+            edit.setForeground(Color.WHITE);
+            mode.setForeground(Color.WHITE);
+
+            menuBar.setBackground(new Color(51,51,51));
+            
+            zoomOut.setBackground(new Color(51,51,51));
+            zoomIn.setBackground(new Color(51,51,51));
+            zoomIn.setForeground(Color.WHITE);
+            zoomOut.setForeground(Color.WHITE);
+            
+            scpane.setBorder(BorderFactory.createLineBorder(new Color(30,30,30), 7));
+            scpane.getVerticalScrollBar().setBackground(new Color(51,51,51));
+            scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+                @Override
+                protected void configureScrollBarColors() {
+                    this.thumbColor = new Color(100, 100, 100);
+                }
+            });
+        } else if(ae.getActionCommand().equals("+")) {
+        	if(font<40)
+        	{
+        		font++;
+        		area.setFont(new Font("SAN_SERIF", Font.PLAIN, font));
+        	}
+        } else if(ae.getActionCommand().equals("-")) {
+        	if(font>20)
+        	{
+        		font--;
+        		area.setFont(new Font("SAN_SERIF", Font.PLAIN, font));
+        	}
         }
     }
 
     public static void main(String[] args) {
         new Notepad();
     }
-
 }
