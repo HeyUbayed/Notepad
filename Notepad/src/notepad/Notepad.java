@@ -128,17 +128,12 @@ public class Notepad extends JFrame implements ActionListener{
         zoomOut.setBorderPainted(false);
         zoomOut.setFocusPainted(false);
         zoomOut.addActionListener(this);
-           
+
         scpane = new JScrollPane(area); 
         menuBar.setBorder(BorderFactory.createEmptyBorder());
-        scpane.setBorder(BorderFactory.createLineBorder(Color.white, 7));
-        scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-            @Override
-            protected void configureScrollBarColors() {
-                this.thumbColor = Color.LIGHT_GRAY; 
-            }
-        });
         add(scpane, BorderLayout.CENTER);
+        
+        light();
         
         setVisible(true);
     }
@@ -201,56 +196,10 @@ public class Notepad extends JFrame implements ActionListener{
             area.replaceRange("", area.getSelectionStart(), area.getSelectionEnd());
         } else if (ae.getActionCommand().equals("Select All")) {
             area.selectAll();
-        } else if (ae.getActionCommand().equals("Light")) {
-
-            area.setBackground(Color.WHITE);
-            area.setForeground(Color.BLACK);
-            area.setCaretColor(Color.BLACK);
-            
-            zoomOut.setForeground(Color.black);
-            zoomIn.setForeground(Color.black);
-            zoomOut.setBackground(new Color(255,247,247));
-            zoomIn.setBackground(new Color(255,247,247));
-            
-            file.setForeground(Color.BLACK);
-            edit.setForeground(Color.BLACK);
-            mode.setForeground(Color.BLACK);
-            
-            menuBar.setBackground(new Color(255,247,247));
-           
-            scpane.getVerticalScrollBar().setBackground(Color.gray);
-            scpane.setBorder(BorderFactory.createLineBorder(Color.white, 7));
-            scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-                @Override
-                protected void configureScrollBarColors() {
-                    this.thumbColor = Color.LIGHT_GRAY; 
-                }
-            });
         } else if (ae.getActionCommand().equals("Dark")) {
-
-            area.setBackground(new Color(30,30,30));
-            area.setForeground(Color.WHITE);
-            area.setCaretColor(Color.WHITE);
-
-            file.setForeground(Color.WHITE);
-            edit.setForeground(Color.WHITE);
-            mode.setForeground(Color.WHITE);
-
-            menuBar.setBackground(new Color(51,51,51));
-            
-            zoomOut.setBackground(new Color(51,51,51));
-            zoomIn.setBackground(new Color(51,51,51));
-            zoomIn.setForeground(Color.WHITE);
-            zoomOut.setForeground(Color.WHITE);
-            
-            scpane.setBorder(BorderFactory.createLineBorder(new Color(30,30,30), 7));
-            scpane.getVerticalScrollBar().setBackground(new Color(51,51,51));
-            scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-                @Override
-                protected void configureScrollBarColors() {
-                    this.thumbColor = new Color(100, 100, 100);
-                }
-            });
+        	dark();
+        }else if (ae.getActionCommand().equals("Light")) {
+        	light();
         } else if(ae.getActionCommand().equals("+")) {
         	if(font<40)
         	{
@@ -265,7 +214,90 @@ public class Notepad extends JFrame implements ActionListener{
         	}
         }
     }
+    
+    
+    void light()
+    {
+    	area.setBackground(Color.WHITE);
+        area.setForeground(Color.BLACK);
+        area.setCaretColor(Color.BLACK);
+        file.setForeground(Color.BLACK);
+        edit.setForeground(Color.BLACK);
+        mode.setForeground(Color.BLACK);
+        
+        zoomOut.setBackground(new Color(245, 243, 246));
+        zoomIn.setBackground(new Color(245, 243, 246));
+        zoomOut.setForeground(Color.black);
+        zoomIn.setForeground(Color.black);
 
+        menuBar.setBackground(new Color(245, 243, 246));
+        
+        
+        scpane.setBorder(BorderFactory.createLineBorder(Color.white, 7));
+        scpane.getVerticalScrollBar().setBackground(new Color(240, 240, 240));
+        scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = new Color(180, 180, 180); 
+            }
+        });
+
+        Color popupBg = Color.WHITE;
+        Color popupFg = Color.BLACK;
+
+        for (JMenu menu : new JMenu[]{file, edit, mode}) {
+            menu.getPopupMenu().setBackground(popupBg);
+            menu.getPopupMenu().setForeground(popupFg);
+            for (Component c : menu.getMenuComponents()) {
+                if (c instanceof JMenuItem) {
+                    c.setBackground(popupBg);
+                    c.setForeground(popupFg);
+                }
+            }
+        }
+    }
+    
+    
+    void dark()
+    {
+    	area.setBackground(new Color(30,30,30));
+        area.setForeground(Color.WHITE);
+        area.setCaretColor(Color.WHITE);
+        file.setForeground(Color.WHITE);
+        edit.setForeground(Color.WHITE);
+        mode.setForeground(Color.WHITE);
+
+        zoomOut.setBackground(new Color(51,51,51));
+        zoomIn.setBackground(new Color(51,51,51));
+        zoomIn.setForeground(Color.WHITE);
+        zoomOut.setForeground(Color.WHITE);
+
+        menuBar.setBackground(new Color(51,51,51));
+        
+        scpane.setBorder(BorderFactory.createLineBorder(new Color(30,30,30), 7));
+        scpane.getVerticalScrollBar().setBackground(new Color(51,51,51));
+        scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = new Color(100, 100, 100);
+            }
+        });
+
+        Color popupBg = new Color(51,51,51);
+        Color popupFg = Color.WHITE;
+
+        for (JMenu menu : new JMenu[]{file, edit, mode}) {
+            menu.getPopupMenu().setBackground(popupBg);
+            menu.getPopupMenu().setForeground(popupFg);
+            for (Component c : menu.getMenuComponents()) {
+                if (c instanceof JMenuItem) {
+                    c.setBackground(popupBg);
+                    c.setForeground(popupFg);
+                }
+            }
+        }
+    }
+    
     public static void main(String[] args) {
         new Notepad();
     }
