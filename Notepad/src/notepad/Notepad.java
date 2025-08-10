@@ -231,8 +231,7 @@ public class Notepad extends JFrame implements ActionListener{
         zoomIn.setForeground(Color.black);
 
         menuBar.setBackground(new Color(245, 243, 246));
-        
-        
+    
         scpane.setBorder(BorderFactory.createLineBorder(Color.white, 7));
         scpane.getVerticalScrollBar().setBackground(new Color(240, 240, 240));
         scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
@@ -297,8 +296,10 @@ public class Notepad extends JFrame implements ActionListener{
             }
         }
     }
-    
+
+	
     public static void main(String[] args) {
         new Notepad();
     }
 }
+
