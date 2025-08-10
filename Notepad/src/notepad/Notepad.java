@@ -201,15 +201,15 @@ public class Notepad extends JFrame implements ActionListener{
         }else if (ae.getActionCommand().equals("Light")) {
         	light();
         } else if(ae.getActionCommand().equals("+")) {
-        	if(font<40)
+        	if(font<50)
         	{
-        		font++;
+        		font+=5;
         		area.setFont(new Font("SAN_SERIF", Font.PLAIN, font));
         	}
         } else if(ae.getActionCommand().equals("-")) {
         	if(font>20)
         	{
-        		font--;
+        		font-=5;
         		area.setFont(new Font("SAN_SERIF", Font.PLAIN, font));
         	}
         }
