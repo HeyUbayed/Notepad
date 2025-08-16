@@ -20,7 +20,7 @@ public class Notepad extends JFrame implements ActionListener{
     private JTextArea area;
     private JScrollPane scpane;
     JMenuBar menuBar;
-    JMenu file, edit, mode;
+    JMenu file, edit, theme;
     JMenuItem newdoc, open, save, print, exit;
     JMenuItem copy, paste, cut, selectall;
     JMenuItem light, dark;
@@ -44,7 +44,7 @@ public class Notepad extends JFrame implements ActionListener{
         
         file = new JMenu("File"); 
         edit = new JMenu("Edit");
-        mode = new JMenu("Mode");
+        theme = new JMenu("Theme");
         
         newdoc = new JMenuItem("New");
         open = new JMenuItem("Open");
@@ -92,15 +92,17 @@ public class Notepad extends JFrame implements ActionListener{
         area.setFont(new Font("SAN_SERIF", Font.PLAIN, font));
         file.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
         edit.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
-        mode.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
+        theme.setFont(new Font("SAN_SERIF", Font.PLAIN, 16));
         zoomIn.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
         zoomOut.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
         
+        menuBar.setPreferredSize(new Dimension(getWidth(), 30));
+
         setJMenuBar(menuBar);
         
         menuBar.add(file);
         menuBar.add(edit);
-        menuBar.add(mode);
+        menuBar.add(theme);
         
         file.add(newdoc);
         file.add(open);
@@ -113,8 +115,8 @@ public class Notepad extends JFrame implements ActionListener{
         edit.add(cut);
         edit.add(selectall);
         
-        mode.add(light);
-        mode.add(dark);
+        theme.add(light);
+        theme.add(dark);
         
         menuBar.add(zoomIn);
         menuBar.add(zoomOut);
@@ -223,7 +225,7 @@ public class Notepad extends JFrame implements ActionListener{
         area.setCaretColor(Color.BLACK);
         file.setForeground(Color.BLACK);
         edit.setForeground(Color.BLACK);
-        mode.setForeground(Color.BLACK);
+        theme.setForeground(Color.BLACK);
         
         zoomOut.setBackground(new Color(245, 243, 246));
         zoomIn.setBackground(new Color(245, 243, 246));
@@ -231,7 +233,8 @@ public class Notepad extends JFrame implements ActionListener{
         zoomIn.setForeground(Color.black);
 
         menuBar.setBackground(new Color(245, 243, 246));
-    
+        
+        
         scpane.setBorder(BorderFactory.createLineBorder(Color.white, 7));
         scpane.getVerticalScrollBar().setBackground(new Color(240, 240, 240));
         scpane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
@@ -239,12 +242,33 @@ public class Notepad extends JFrame implements ActionListener{
             protected void configureScrollBarColors() {
                 this.thumbColor = new Color(180, 180, 180); 
             }
+            
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return new JButton() {
+                    @Override
+                    public Dimension getPreferredSize() {
+                        return new Dimension(0, 0);
+                    }
+                };
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return new JButton() {
+                    @Override
+                    public Dimension getPreferredSize() {
+                        return new Dimension(0, 0);
+                    }
+                };
+            }
+
         });
 
         Color popupBg = Color.WHITE;
         Color popupFg = Color.BLACK;
 
-        for (JMenu menu : new JMenu[]{file, edit, mode}) {
+        for (JMenu menu : new JMenu[]{file, edit, theme}) {
             menu.getPopupMenu().setBackground(popupBg);
             menu.getPopupMenu().setForeground(popupFg);
             for (Component c : menu.getMenuComponents()) {
@@ -264,7 +288,7 @@ public class Notepad extends JFrame implements ActionListener{
         area.setCaretColor(Color.WHITE);
         file.setForeground(Color.WHITE);
         edit.setForeground(Color.WHITE);
-        mode.setForeground(Color.WHITE);
+        theme.setForeground(Color.WHITE);
 
         zoomOut.setBackground(new Color(51,51,51));
         zoomIn.setBackground(new Color(51,51,51));
@@ -280,12 +304,33 @@ public class Notepad extends JFrame implements ActionListener{
             protected void configureScrollBarColors() {
                 this.thumbColor = new Color(100, 100, 100);
             }
+            
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return new JButton() {
+                    @Override
+                    public Dimension getPreferredSize() {
+                        return new Dimension(0, 0);
+                    }
+                };
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return new JButton() {
+                    @Override
+                    public Dimension getPreferredSize() {
+                        return new Dimension(0, 0);
+                    }
+                };
+            }
+
         });
 
         Color popupBg = new Color(51,51,51);
         Color popupFg = Color.WHITE;
 
-        for (JMenu menu : new JMenu[]{file, edit, mode}) {
+        for (JMenu menu : new JMenu[]{file, edit, theme}) {
             menu.getPopupMenu().setBackground(popupBg);
             menu.getPopupMenu().setForeground(popupFg);
             for (Component c : menu.getMenuComponents()) {
@@ -296,10 +341,8 @@ public class Notepad extends JFrame implements ActionListener{
             }
         }
     }
-
-	
+    
     public static void main(String[] args) {
         new Notepad();
     }
 }
-
